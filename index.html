@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Проект "Комменты"</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <ul class="comments">
+        <li class="comment">
+          <div class="comment-header">
+            <div class="comment-author">Глеб Фокин</div>
+            <div class="comment-time">12.02.23 12:18</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              Это будет первый комментарий на этой странице
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">3</span>
+              <button class="like-button"></button>
+            </div>
+          </div>
+        </li>
+        <li class="comment">
+          <div class="comment-header">
+            <div class="comment-author">Варвара Н.</div>
+            <div class="comment-time">13.02.22 19:22</div>
+          </div>
+          <div class="comment-body">
+            <div class="comment-text">
+              Мне нравится как оформлена эта страница! ❤
+            </div>
+          </div>
+          <div class="comment-footer">
+            <div class="likes">
+              <span class="likes-counter">75</span>
+              <button class="like-button -active-like"></button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="add-form">
+        <input
+          type="text"
+          class="add-form-name"
+          placeholder="Введите ваше имя"
+          onchange="checkButton()"
+        />
+        <textarea
+          type="textarea"
+          class="add-form-text"
+          placeholder="Введите ваш коментарий"
+          rows="4"
+          onchange="checkButton()"
+        ></textarea>
+        <div class="add-form-row">
+          <button class="add-form-button">Написать</button>
+          <button class="add-form-button-delete">Удалить комментарий</button>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+
+  <script>
+
+    
+
+    const buttonElement =document.querySelector(".add-form-button");
+    const nameInputElement = document.querySelector('.add-form-name');
+    const commentInputElement = document.querySelector('.add-form-text');       
+    
+    //Функция добавляет коммент через кнопку
+    
+    buttonElement.addEventListener('click', showComment);    
+
+    //Функция добавляет коммент через Enter
+    
+    document.addEventListener('keyup', function(event) {
+        
+        if(event.code == 'Enter' || event.code == 'NumpadEnter') showComment();
+        return;
+     });
+
+    // Функция преобразует дату к шаблону комментария
+
+    function myDate () {
+      let date = new Date();
+      let monthArray=['01','02','03','04','05','06','07','08','09','10','11','12'];
+      let myMinutes = String(date.getMinutes()).length < 2 ? '0' + date.getMinutes() : date.getMinutes();
+      let myHours = String(date.getHours()).length < 2 ? '0' + date.getHours() : date.getHours();
+      let myDay = String(date.getDate()).length < 2 ? '0' + date.getDate() : date.getDate();
+      let myMonth = monthArray[+date.getMonth()];
+      let myYear = String( date.getFullYear() ).slice(2);
+      let str= myDay + '.' + myMonth + '.' + myYear + ' ' + myHours + ':' + myMinutes;
+      return str;
+    }
+
+    // Функция вшита в теги input и textarea. Снимает блокировку с кнопки если поля ввода непустые
+
+    function checkButton(){
+      
+      if(nameInputElement.value != '' && commentInputElement .value != ''){
+        buttonElement.disabled = false;
+      }
+    }
+
+    // Функция-коллбэк Добавляет комментарий
+
+    function showComment(){
+
+        if(nameInputElement.value == '' || commentInputElement .value == '') {
+
+        buttonElement.disabled =true;
+        return;
+        }
+    
+
+        const commentsElement = document.querySelector('.comments');
+        const newCommentElement = document.querySelector('.comment').cloneNode(true);    
+        const newComment = document.createElement('li');
+        
+
+        newComment.className = 'comment';
+        newComment.innerHTML = newCommentElement.innerHTML;
+
+        newComment.querySelector('.comment-author').innerHTML = nameInputElement.value;
+        newComment.querySelector('.comment-time').innerHTML = myDate();
+        newComment.querySelector('.comment-text').innerHTML = commentInputElement.value;
+        newComment.querySelector('.likes-counter').innerHTML = 0;
+
+        commentsElement.append(newComment);
+
+        nameInputElement.value = '';
+        commentInputElement.value = '';
+        buttonElement.disabled = true;
+        
+    }
+
+    // Блок отвечает за удаление комментариев при нажатии кнопки. Оставляет не менее одного комментария
+
+    const buttonDeleteElement =document.querySelector(".add-form-button-delete");
+    
+    buttonDeleteElement.addEventListener('click',() => { 
+     
+      const commentsElement = document.querySelectorAll('.comments');
+
+        if (commentsElement[0].children.length > 1) {
+            commentsElement[0].lastChild.remove();
+        }    
+
+    });    
+  </script>
+</html>
